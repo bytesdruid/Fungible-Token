@@ -1,0 +1,173 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz main_l18
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l17
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l16
+txn OnCompletion
+int CloseOut
+==
+bnz main_l15
+txn OnCompletion
+int OptIn
+==
+bnz main_l14
+txna ApplicationArgs 0
+byte "Init_Admin"
+==
+bnz main_l13
+txna ApplicationArgs 0
+byte "Set_Admin"
+==
+bnz main_l12
+txna ApplicationArgs 0
+byte "Mint"
+==
+bnz main_l11
+txna ApplicationArgs 0
+byte "Transfer"
+==
+bnz main_l10
+err
+main_l10:
+txn NumAppArgs
+int 2
+==
+assert
+txna ApplicationArgs 1
+btoi
+int 0
+byte "LocalBalance"
+app_local_get
+<=
+assert
+int 0
+byte "LocalBalance"
+int 0
+byte "LocalBalance"
+app_local_get
+txna ApplicationArgs 1
+btoi
+-
+app_local_put
+int 1
+byte "LocalBalance"
+int 1
+byte "LocalBalance"
+app_local_get
+txna ApplicationArgs 1
+btoi
++
+app_local_put
+int 1
+return
+main_l11:
+txn NumAppArgs
+int 2
+==
+assert
+txna ApplicationArgs 1
+btoi
+byte "GlobalReserve"
+app_global_get
+<=
+assert
+byte "GlobalReserve"
+byte "GlobalReserve"
+app_global_get
+txna ApplicationArgs 1
+btoi
+-
+app_global_put
+int 0
+byte "LocalBalance"
+int 0
+byte "LocalBalance"
+app_local_get
+txna ApplicationArgs 1
+btoi
++
+app_local_put
+int 0
+byte "Admin"
+app_local_get
+return
+main_l12:
+int 0
+byte "Admin"
+app_local_get
+txn NumAppArgs
+int 1
+==
+&&
+assert
+int 1
+byte "Admin"
+int 1
+app_local_put
+int 1
+return
+main_l13:
+txn Sender
+global CreatorAddress
+==
+assert
+int 0
+byte "Admin"
+int 1
+app_local_put
+int 1
+return
+main_l14:
+int 0
+byte "LocalBalance"
+int 0
+app_local_put
+int 1
+return
+main_l15:
+byte "GlobalReserve"
+byte "GlobalReserve"
+app_global_get
+int 0
+byte "LocalBalance"
+app_local_get
++
+app_global_put
+int 1
+return
+main_l16:
+int 0
+byte "Admin"
+app_local_get
+return
+main_l17:
+int 0
+byte "Admin"
+app_local_get
+return
+main_l18:
+byte "AssetName"
+byte "Bloom Token"
+app_global_put
+byte "UnitName"
+byte "BLT"
+app_global_put
+byte "Decimals"
+int 0
+app_global_put
+byte "Total"
+int 100000000
+app_global_put
+byte "GlobalReserve"
+int 100000000
+app_global_put
+int 1
+return

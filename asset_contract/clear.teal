@@ -1,0 +1,11 @@
+#pragma version 6
+byte "GlobalReserve"
+byte "GlobalReserve"
+app_global_get
+int 0
+byte "LocalBalance"
+app_local_get
++
+app_global_put
+int 1
+return
